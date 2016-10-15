@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+          "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.objectFactory" value="org.apache.struts2.spring.StrutsSpringObjectFactory" />
+	<constant name="struts.action.excludePattern" value="/ckfinder/core/connector/java/connector.java*" />
+    <package name="yiblog" extends="struts-default">
+    
+    	<interceptors>
+    		<interceptor name="loadCommentInterceptor" class="loadCommentInterceptor"/>
+    		<interceptor-stack name="loadCommentStack">
+    			<interceptor-ref name="defaultStack"/>
+    			<interceptor-ref name="loadCommentInterceptor"/>
+    		</interceptor-stack>
+    	</interceptors>
+    	
+    	
+    	<global-results>
+    		<result name="input">/input.jsp</result>
+    		<result name="index" type="redirect">/index.jsp</result>
+    		<result name="signin" type="redirect">/signin.jsp</result>
+    	</global-results>
+    	
+    	<action name="cate_*" class="categoryAction" method="{1}">
+    	</action>
+    	
+    	<action name="pass_get" class="passageAction" method="get">
+    		<interceptor-ref name="loadCommentStack">
+    			<param name="passageid">${passage.id}</param>
+    		</interceptor-ref>
+    		<result name="viewPassage" type="dispatcher">/viewPassage.jsp</result>
+    	</action>
+    	
+    	<action name="pass_*" class="passageAction" method="{1}">
+    		<result name="passageList" type="dispatcher">/passageList.jsp</result>
+    		<result name="editPassage">/admin/editPassage.jsp</result>
+    	</action>
+    	
+    	<action name="user_*" class="userAction" method="{1}">
+    		<result name="input">/signup.jsp</result>
+    		<result name="viewUser">/viewUser.jsp</result>
+    		<result name="viewUsers">/admin/viewUsers.jsp</result>
+    		<result name="signin">/signin.jsp</result>
+    		<result name="editUser">/user/editUser.jsp</result>
+    	</action>
+    	
+    	<action name="comment_*" class="commentAction" method="{1}">
+    		<result name="toPassage" type="redirectAction">
+    			<param name="actionName">pass_get</param>
+    			<param name="passage.id">${passage.id}</param>
+    		</result>
+    		<result name="newComment">/admin/newComment.jsp</result>
+    		<result name="commentList">/admin/commentList.jsp</result>
+    		<result name="markRead" type="redirectAction">
+    			<param name="actionName">comment_getNewComment</param>
+    			<param name="toUser.id">${toUser.id}</param>
+    		</result>
+    	</action>
+    	
+    	<action name="resource_*" class="resourceAction" method="{1}"></action>
+    	
+    	<action name="subCategory_*" class="subCategoryAction" method="{1}"></action>
+    	
+    	<action name="reply_*" class="replyAction" method="{1}">
+    		<result name="toPassage" type="redirectAction">
+    			<param name="actionName">pass_get</param>
+    			<param name="passage.id">${passageid}</param>
+    		</result>
+    		<result name="newReply">/user/newReply.jsp</result>
+    		<result name="replyList">/user/replyList.jsp</result>
+    		<result name="markRead" type="redirectAction">
+    			<param name="actionName">reply_getNewReply</param>
+    			<param name="toUser.id">${toUser.id}</param>
+    		</result>
+    	</action>
+    	
+    	<action name="announcement_*" class="announcementAction" method="{1}"></action>
+    	
+    </package> 
+</struts>

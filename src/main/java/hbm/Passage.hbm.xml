@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="me.paul.yiblog.entity">
+
+	<class name="Passage" table="passage">
+
+		<id name="id" column="id" type="long">
+			<generator class="native" />
+		</id>
+		<property name="title" column="title" type="string" length="50"/>
+		<many-to-one name="author" column="author" class="User" lazy="false" cascade="delete"/>
+		<property name="readtime" column="readtime" type="integer"/>
+		<property name="writetime" type="java.util.Date">
+			<column name="writetime" sql-type="datetime" not-null="true"/>
+		</property>
+		<many-to-one name="category" class="Category" column="category" lazy="false" cascade="delete"/>
+		<many-to-one name="subCategory" class="SubCategory" column="subCategory" lazy="false" cascade="delete"/>
+		<property name="content" column="content" type="text"/>
+	</class>
+
+</hibernate-mapping>

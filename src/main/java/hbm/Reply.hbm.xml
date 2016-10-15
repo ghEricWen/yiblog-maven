@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="me.paul.yiblog.entity">
+	<class name="Reply" table="reply">
+		<id name="id" column="id" type="long">
+			<generator class="native"/>
+		</id> 
+		<many-to-one name="comment" column="comment" class="Comment" lazy="false" cascade="delete"/>
+		<many-to-one name="fromUser" column="fromUser" class="User" lazy="false" cascade="delete"/>
+		<many-to-one name="toUser" column="toUser" class="User" lazy="false" cascade="delete"/>
+		
+		<property name="content" column="content" type="string"/>
+		<property name="replytime" type="java.util.Date">
+			<column name="replytime" sql-type="datetime" not-null="true"/>
+		</property>
+		<property name="newreply" column="newreply" type="integer"/>
+	
+	</class>
+
+</hibernate-mapping>

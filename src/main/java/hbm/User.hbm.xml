@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="me.paul.yiblog.entity">
+
+	<class name="User" table="user">
+		<id name="id" column="id" type="long">
+			<generator class="native"/>
+		</id>
+		<property name="name" column="name" type="string" unique="true" not-null="true" length="30"/>
+		<property name="email" column="email" type="string" unique="true" not-null="true" length="50"/>
+		<property name="password" column="password" type="string" not-null="true" length="32"/>
+		<property name="phonenumber" column="phonenumber" type="string" length="20"/>
+		<many-to-one name="power" column="powerid" class="Power" cascade="delete"/>
+		<property name="sex" column="sex" type="int" />
+		<property name="birthDate" type="java.util.Date">
+			<column name="birthDate" sql-type="datetime"/>
+		</property>
+		<property name="registerDate" type="java.util.Date">
+			<column name="registerDate" sql-type="datetime"/>
+		</property>
+		<property name="lastLoginDate" type="java.util.Date">
+			<column name="lastLoginDate" sql-type="datetime"/>
+		</property>
+		
+	</class>
+
+</hibernate-mapping>

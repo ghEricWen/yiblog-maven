@@ -9,8 +9,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import me.paul.yiblog.dao.IAnnouncementDao;
 import me.paul.yiblog.entity.Announcement;
-import me.paul.yiblog.service.IAnnouncementService;
 
 public class LoadAnnouncementFilter implements Filter{
 
@@ -18,15 +18,15 @@ public class LoadAnnouncementFilter implements Filter{
 		
 	}
 
-	private IAnnouncementService announcementService ;
+	private IAnnouncementDao announcementDao ;
 	
-	public void setAnnouncementService(IAnnouncementService announcementService) {
-		this.announcementService = announcementService;
+	public void setAnnouncementDao(IAnnouncementDao announcementDao) {
+		this.announcementDao = announcementDao;
 	}
 	
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		Announcement announcement = announcementService.getLatest();
+		Announcement announcement = announcementDao.getLatest();
 		request.setAttribute("announcement", announcement);
 		chain.doFilter(request, response);
 	}

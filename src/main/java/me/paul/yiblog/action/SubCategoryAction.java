@@ -3,10 +3,10 @@ package me.paul.yiblog.action;
 import java.io.IOException;
 import java.util.List;
 
+import me.paul.yiblog.dao.ICategoryDao;
+import me.paul.yiblog.dao.ISubCategoryDao;
 import me.paul.yiblog.entity.Category;
 import me.paul.yiblog.entity.SubCategory;
-import me.paul.yiblog.service.ICategoryService;
-import me.paul.yiblog.service.ISubCategoryService;
 
 import org.apache.struts2.ServletActionContext;
 import org.dom4j.Attribute;
@@ -22,16 +22,16 @@ public class SubCategoryAction extends ActionSupport {
 
 	private static final long serialVersionUID = 4946555677307680653L;
 
-	private ISubCategoryService subCategoryService;
+	private ISubCategoryDao subCategoryDao;
 	
-	private ICategoryService categoryService;
+	private ICategoryDao categoryDao;
 	
-	public void setCategoryService(ICategoryService categoryService) {
-		this.categoryService = categoryService;
+	public void setCategoryDao(ICategoryDao categoryDao) {
+		this.categoryDao = categoryDao;
 	}
 
-	public void setSubCategoryService(ISubCategoryService subCategoryService) {
-		this.subCategoryService = subCategoryService;
+	public void setSubCategoryDao(ISubCategoryDao subCategoryDao) {
+		this.subCategoryDao = subCategoryDao;
 	}
 
 	private Category category;
@@ -56,15 +56,15 @@ public class SubCategoryAction extends ActionSupport {
 
 	//添加subCategory
 	public String save() {
-		Category cate = categoryService.get(category.getId());
+		Category cate = categoryDao.get(category.getId());
 		subCategory.setCategory(cate);
-		subCategoryService.save(subCategory);
+		subCategoryDao.save(subCategory);
 		return "index";
 	}
 	
 	//ajax用cagory id 获取subCategory xml
 	public String getXmlByCategory() throws  IOException{
-		List<SubCategory> list = subCategoryService.getByCategory(category.getId());
+		List<SubCategory> list = subCategoryDao.getByCategory(category.getId());
 		DocumentFactory docfactory = new DocumentFactory();
 		Document doc = docfactory.createDocument();
 		Element root = docfactory.createElement("subcategorys");

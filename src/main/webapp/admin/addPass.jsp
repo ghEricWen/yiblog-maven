@@ -100,6 +100,7 @@
 			
 			CKFinder.setupCKEditor(editor);
 			
-		</script>
+	</script>
+	<script type="text/javascript" src="${pageContext.request.contextPath }/dist/js/bootstrap.js"></script>
 </body>
 </html>

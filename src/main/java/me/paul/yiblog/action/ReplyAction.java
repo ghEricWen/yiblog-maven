@@ -6,14 +6,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.struts2.ServletActionContext;
-
+import me.paul.yiblog.dao.ICommentDao;
+import me.paul.yiblog.dao.IReplyDao;
 import me.paul.yiblog.entity.Comment;
 import me.paul.yiblog.entity.Reply;
 import me.paul.yiblog.entity.User;
-import me.paul.yiblog.service.ICommentService;
-import me.paul.yiblog.service.IReplyService;
 import me.paul.yiblog.util.CommonUtil;
+
+import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
@@ -22,16 +22,16 @@ public class ReplyAction extends ActionSupport {
 
 	private static final long serialVersionUID = 7911788803952912838L;
 
-	private IReplyService replyService;
+	private IReplyDao replyDao;
 
-	private ICommentService commentService;
+	private ICommentDao commentDao;
 
-	public void setReplyService(IReplyService replyService) {
-		this.replyService = replyService;
+	public void setReplyDao(IReplyDao replyDao) {
+		this.replyDao = replyDao;
 	}
 
-	public void setCommentService(ICommentService commentService) {
-		this.commentService = commentService;
+	public void setCommentDao(ICommentDao commentDao) {
+		this.commentDao = commentDao;
 	}
 
 	private Reply reply;
@@ -111,11 +111,11 @@ public class ReplyAction extends ActionSupport {
 		reply.setNewreply(1);
 		reply.setReplytime(new Date());
 		synchronized (ReplyAction.class) {
-			comment = commentService.get(comment.getId());
+			comment = commentDao.get(comment.getId());
 			comment.setReplyCount(comment.getReplyCount() + 1);
-			commentService.update(comment);
+			commentDao.update(comment);
 			reply.setComment(comment);
-			replyService.save(reply);
+			replyDao.save(reply);
 		}
 		return "toPassage";
 	}
@@ -127,11 +127,11 @@ public class ReplyAction extends ActionSupport {
 		reply.setNewreply(1);
 		reply.setReplytime(new Date());
 		synchronized (ReplyAction.class) {
-			comment = commentService.get(comment.getId());
+			comment = commentDao.get(comment.getId());
 			comment.setReplyCount(comment.getReplyCount() + 1);
-			commentService.update(comment);
+			commentDao.update(comment);
 			reply.setComment(comment);
-			replyService.save(reply);
+			replyDao.save(reply);
 		}
 		return null;
 	}
@@ -139,7 +139,7 @@ public class ReplyAction extends ActionSupport {
 	//获取某用户新回复的数量
 	public String getCount() throws IOException {
 		long id = toUser.getId();
-		int count = replyService.getNewReplyCount(id);
+		int count = replyDao.getNewReplyCount(id);
 		PrintWriter writer = ServletActionContext.getResponse().getWriter();
 		writer.write(String.valueOf(count));
 		return null;
@@ -148,7 +148,7 @@ public class ReplyAction extends ActionSupport {
 	//获取新回复
 	public String getNewReply() {
 		long id = toUser.getId();
-		List<Reply> list = replyService.getNewReply(id);
+		List<Reply> list = replyDao.getNewReply(id);
 		ActionContext.getContext().getContextMap().put("newReplys", list);
 		return "newReply";
 	}
@@ -156,8 +156,8 @@ public class ReplyAction extends ActionSupport {
 	//分页获取回复
 	public String getReplys() {
 		long id = toUser.getId();
-		List<Reply> list = replyService.getReply(id, page, replyPerPage);
-		int count = replyService.getAllReplyCount(id);
+		List<Reply> list = replyDao.getReply(id, page, replyPerPage);
+		int count = replyDao.getAllReplyCount(id);
 		int pageCount = (int) Math.ceil(count * 1.0 / replyPerPage);
 		Map<String,Integer> map = CommonUtil.getPageMap(pageCount, page);
 		Map<String,Object> request = ActionContext.getContext().getContextMap(); 
@@ -173,9 +173,9 @@ public class ReplyAction extends ActionSupport {
 	//将回复标记为已读
 	public String markRead(){
 		long id = reply.getId();
-		reply = replyService.get(id);
+		reply = replyDao.get(id);
 		reply.setNewreply(0);
-		replyService.update(reply);
+		replyDao.update(reply);
 		return "markRead";
 	}
 

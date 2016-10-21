@@ -2,7 +2,7 @@
 <!DOCTYPE struts PUBLIC
           "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
           "http://struts.apache.org/dtds/struts-2.0.dtd">
-<struts>
+<struts> 
 	<constant name="struts.objectFactory" value="org.apache.struts2.spring.StrutsSpringObjectFactory" />
 	<constant name="struts.action.excludePattern" value="/ckfinder/core/connector/java/connector.java*" />
     <package name="yiblog" extends="struts-default">
@@ -33,6 +33,7 @@
     	</action>
     	
     	<action name="pass_*" class="passageAction" method="{1}">
+    	    <param name="passagePerPage">10</param>
     		<result name="passageList" type="dispatcher">/passageList.jsp</result>
     		<result name="editPassage">/admin/editPassage.jsp</result>
     	</action>
@@ -76,6 +77,13 @@
     	</action>
     	
     	<action name="announcement_*" class="announcementAction" method="{1}"></action>
+    	
+    	<action name="feedback_*" class="feedbackAction" method="{1}">
+    	  <result name="feedback">/feedback.jsp</result>
+    	  <result name="feedbackList">/admin/feedbackList.jsp</result>
+    	  
+    	</action>
+    	
     	
     </package> 
 </struts>

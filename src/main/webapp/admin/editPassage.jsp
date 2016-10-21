@@ -76,11 +76,12 @@
 				</td>
 			</tr>
 		</table>
-		<textarea name="passage.content" id="passageContent">${requestScope.passageGet.content }</textarea>
+		<textarea name="passage.content" id="passageContent"><s:property value="#passageGet.content"/></textarea>
 	</s:form>
-	
 	</div>
 	
+	<script type="text/javascript" src="${pageContext.request.contextPath }/dist/js/jquery.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath }/dist/js/bootstrap.js"></script>
 	
 	<script type="text/javascript">
 			var editor = CKEDITOR.replace('passage.content',{
@@ -94,9 +95,8 @@
 				filebrowserWindowHeight : '50%',
 				filebrowserWindowWidth : '70%'
 			});	
-			
 			CKFinder.setupCKEditor(editor);
 			
-		</script>
+	</script>
 </body>
 </html>

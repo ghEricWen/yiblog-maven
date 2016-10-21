@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="me.paul.yiblog.entity">
+	<class name="Feedback" table="feedback">
+	  <id name="id" column="id">
+	    <generator class="native"/>
+	  </id>
+	  
+	  <property name="username" column="username" type="string" length="30"/>
+	  <property name="feedbackDate" type="java.util.Date">
+	    <column name="feedbackDate" sql-type="datetime" not-null="true"/>
+	  </property>
+	  <property name="feedbackContent" column="feedbackContent" type="text"/>
+	</class>
+</hibernate-mapping>

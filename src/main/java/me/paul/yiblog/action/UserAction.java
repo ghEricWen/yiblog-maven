@@ -8,13 +8,13 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
-import org.apache.struts2.ServletActionContext;
-
+import me.paul.yiblog.dao.IUserDao;
 import me.paul.yiblog.entity.Power;
 import me.paul.yiblog.entity.User;
-import me.paul.yiblog.service.IUserService;
 import me.paul.yiblog.util.CommonUtil;
 import me.paul.yiblog.util.JavaMailUtil;
+
+import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
@@ -53,16 +53,16 @@ public class UserAction extends ActionSupport {
 		this.user = user;
 	}
 
-	private IUserService userService;
+	private IUserDao userDao;
 
-	public void setUserService(IUserService userService) {
-		this.userService = userService;
+	public void setUserDao(IUserDao userDao) {
+		this.userDao = userDao;
 	}
 	
 	//查看用户信息
 	public String getById() {
 		long id = user.getId();
-		user = userService.get(id);
+		user = userDao.get(id);
 		ActionContext.getContext().getContextMap().put("viewUser", user);
 		return "viewUser";
 	}
@@ -78,15 +78,15 @@ public class UserAction extends ActionSupport {
 		user.setRegisterDate(date);
 		user.setLastLoginDate(date);
 		synchronized (UserAction.class) {
-			userService.save(user);
+			userDao.save(user);
 		}
 		return "signin";
 	}
 
 	//用户列表
 	public String viewUsers() {
-		List<User> list = userService.getUsers(page, userPerPage);
-		int userCount = userService.getUserCount();
+		List<User> list = userDao.getUsers(page, userPerPage);
+		int userCount = userDao.getUserCount();
 		int pageCount = (int) Math.ceil(userCount * 1.0 / userPerPage);
 		Map<String,Integer> pageMap = CommonUtil.getPageMap(pageCount, page);
 		Map<String,Object> request = ActionContext.getContext().getContextMap(); 
@@ -101,9 +101,9 @@ public class UserAction extends ActionSupport {
 
 	//登录
 	public String login() {
-		User userGet = userService.getByName(user.getName());
+		User userGet = userDao.getByName(user.getName());
 		if(userGet == null){
-			userGet = userService.getByEmail(user.getName());
+			userGet = userDao.getByEmail(user.getName());
 		}
 		if (userGet != null) {
 			if (userGet.getPassword()
@@ -114,7 +114,7 @@ public class UserAction extends ActionSupport {
 						.getSession();
 				sessionMap.put("currentUser", userGet);
 				userGet.setLastLoginDate(new Date());
-				userService.update(userGet);
+				userDao.update(userGet);
 				return "index";
 			}
 		}
@@ -133,7 +133,7 @@ public class UserAction extends ActionSupport {
 	//ajax 查询邮箱是否已经被占用
 	public String checkEmail() throws IOException {
 		String email = user.getEmail();
-		User user = userService.getByEmail(email);
+		User user = userDao.getByEmail(email);
 		PrintWriter writer = ServletActionContext.getResponse().getWriter();
 		if (user == null) {
 			writer.write("valid");
@@ -147,7 +147,7 @@ public class UserAction extends ActionSupport {
 	//ajax 查询用户名是否已经被占用
 	public String checkName() throws IOException {
 		String name = user.getName();
-		User user = userService.getByName(name);
+		User user = userDao.getByName(name);
 		PrintWriter writer = ServletActionContext.getResponse().getWriter();
 		if (user == null) {
 			writer.write("valid");
@@ -178,19 +178,19 @@ public class UserAction extends ActionSupport {
 	//获取用户信息以编辑
 	public String editProfile(){
 		long id = user.getId();
-		User userGet = userService.get(id);
+		User userGet = userDao.get(id);
 		ActionContext.getContext().getContextMap().put("userGet", userGet);
 		return "editUser";
 	}
 	
 	//提交编辑
 	public synchronized String submitUpdate(){
-		User userGet = userService.get(user.getId());
+		User userGet = userDao.get(user.getId());
 		userGet.setBirthDate(user.getBirthDate());
 		userGet.setName(user.getName());
 		userGet.setPhonenumber(user.getPhonenumber());
 		userGet.setSex(user.getSex());
-		userService.update(userGet);
+		userDao.update(userGet);
 		ActionContext.getContext().getContextMap().put("viewUser", userGet);
 		return "viewUser";
 	}

@@ -28,6 +28,8 @@
 				$("#liAddPassage").show();
 				$("#liAddCates").show();
 				$("#liMyProfile").show();
+				$("#lifeedback").hide();
+				$("#lifeedbackList").show();
 			} else if ($("#currentUserPower").attr("value") == 2) {
 				$("#liReply").show();
 				$("#liNotification").show();
@@ -95,26 +97,20 @@
             </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-              <li id="lisignin"><a
-						href="${pageContext.request.contextPath }/signin.jsp">登录</a></li>
-					<li id="lisignup"><a
-						href="${pageContext.request.contextPath }/signup.jsp">注册</a></li>
-					<li id="liViewUsers" style="display:none;"><s:a action="user_viewUsers?page=1&userPerPage=10">查看用户</s:a></li>
-					<li id="liAddPassage" style="display:none;"><a href="${pageContext.request.contextPath}/admin/addPass.jsp">写文章</a></li>
-					<li id="liAddCates" style="display:none;"><a href="${pageContext.request.contextPath }/admin/addCates.jsp">添加分类/子分类</a></li>
-					<s:url action="user_getById" var="url">
-						<s:param name="user.id" value="%{#session.currentUser.id}"/>
-					</s:url>
-					<li id="liMyProfile" style="display:none;"><a href="<s:property value="#url"/>">我的资料</a></li>
-					<s:url action="comment_getNewComment" var="newCommentUrl">
-						<s:param name="toUser.id" value="%{#session.currentUser.id}"/>
-					</s:url>
-					<li id="liComment" style="display:none;"><a href="<s:property value="#newCommentUrl"/>">新评论<span id="spanComment" class="text-danger">(0)</span></a></li>
-					<s:url action="reply_getNewReply" var="newReplyUrl">
-						<s:param name="toUser.id" value="%{#session.currentUser.id}"/>
-					</s:url>
-					<li id="liReply" style="display:none;"><a href="<s:property value="#newReplyUrl"/>">新回复<span id="spanReply" class="text-danger">(0)</span></a></li>
-					<li id="lilogout" style="display:none;"><s:a action="user_logout">退出</s:a></li>
+              <li id="lifeedback"><a href="${pageContext.request.contextPath }/feedback.jsp">反馈</a></li>
+              <li id="lisignin"><a href="${pageContext.request.contextPath }/signin.jsp">登录</a></li>
+			  <li id="lisignup"><a href="${pageContext.request.contextPath }/signup.jsp">注册</a></li>
+			  <li id="liViewUsers" style="display:none;"><s:a action="user_viewUsers?page=1&userPerPage=10">查看用户</s:a></li>
+			  <li id="liAddPassage" style="display:none;"><a href="${pageContext.request.contextPath}/admin/addPass.jsp">写文章</a></li>
+			  <li id="liAddCates" style="display:none;"><a href="${pageContext.request.contextPath }/admin/addCates.jsp">添加分类/子分类</a></li>
+			  <s:url action="user_getById" var="url"><s:param name="user.id" value="%{#session.currentUser.id}"/></s:url>
+			  <li id="liMyProfile" style="display:none;"><a href="<s:property value="#url"/>">我的资料</a></li>
+			  <s:url action="comment_getNewComment" var="newCommentUrl"><s:param name="toUser.id" value="%{#session.currentUser.id}"/></s:url>
+			  <li id="liComment" style="display:none;"><a href="<s:property value="#newCommentUrl"/>">新评论<span id="spanComment" class="text-danger">(0)</span></a></li>
+			  <s:url action="reply_getNewReply" var="newReplyUrl"><s:param name="toUser.id" value="%{#session.currentUser.id}"/></s:url>
+			  <li id="liReply" style="display:none;"><a href="<s:property value="#newReplyUrl"/>">新回复<span id="spanReply" class="text-danger">(0)</span></a></li>
+			  <li id="lifeedbackList" style="display:none;"><a href="${pageContext.request.contextPath }/feedback_list">查看反馈</a></li>
+			  <li id="lilogout" style="display:none;"><s:a action="user_logout">退出</s:a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div><!--/.container-fluid -->

@@ -19,6 +19,7 @@
 		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/yiblogdb" />
 		<property name="user" value="root" />
 		<property name="password" value="2292" />
+		<property name="maxIdleTime" value="1800"/>
 	</bean>
 
 	<!-- Hibernate Session Factory -->
@@ -29,8 +30,6 @@
 		<property name="hibernateProperties">
 			<value>
 				hibernate.dialect=org.hibernate.dialect.MySQL5Dialect
-				hibernate.show_sql=true
-				hibernate.format_sql=true
 				hibernate.current_session_context_class=thread
 				hibernate.hbm2ddl.auto=update
 			</value>
@@ -45,6 +44,7 @@
 				<value>hbm/SubCategory.hbm.xml</value>
 				<value>hbm/User.hbm.xml</value>
 				<value>hbm/Announcement.hbm.xml</value>
+				<value>hbm/Feedback.hbm.xml</value>
 			</list>
 		</property>
 	</bean>
@@ -83,92 +83,67 @@
 		scope="singleton">
 		<property name="util" ref="hibernateUtil" />
 	</bean>
-
-
-	<!-- service -->
-	<bean id="categoryService" class="me.paul.yiblog.service.impl.CategoryServiceImpl"
-		scope="singleton">
-		<property name="cateDao" ref="categoryDao" />
-	</bean>
-	<bean id="passageService" class="me.paul.yiblog.service.impl.PassageServiceImpl"
-		scope="singleton">
-		<property name="passDao" ref="passageDao" />
-	</bean>
-	<bean id="commentService" class="me.paul.yiblog.service.impl.CommentServiceImpl"
-		scope="singleton">
-		<property name="commentDao" ref="commentDao" />
-	</bean>
-	<bean id="userService" class="me.paul.yiblog.service.impl.UserServiceImpl"
-		scope="singleton">
-		<property name="userDao" ref="userDao" />
-	</bean>
-	<bean id="subCategoryService" class="me.paul.yiblog.service.impl.SubCategoryServiceImpl"
-		scope="singleton">
-		<property name="subCategoryDao" ref="subCategoryDao" />
-	</bean>
-	<bean id="replyService" class="me.paul.yiblog.service.impl.ReplyServiceImpl"
-		scope="singleton">
-		<property name="replyDao" ref="replyDao" />
-	</bean>
-	<bean id="announcementService" class="me.paul.yiblog.service.impl.AnnouncementServiceImpl"
-		scope="singleton">
-		<property name="announcementDao" ref="announcementDao" />
+	<bean id="feedbackDao" class="me.paul.yiblog.dao.impl.FeedbackDaoImpl" scope="singleton">
+	  <property name="util" ref="hibernateUtil"/>
 	</bean>
 
 	<!-- action -->
 	<bean id="categoryAction" class="me.paul.yiblog.action.CategoryAction"
 		scope="prototype">
-		<property name="cateService" ref="categoryService"></property>
+		<property name="categoryDao" ref="categoryDao"></property>
 	</bean>
 	<bean id="passageAction" class="me.paul.yiblog.action.PassageAction"
 		scope="prototype">
-		<property name="passService" ref="passageService" />
-		<property name="cateService" ref="categoryService" />
-		<property name="subCategoryService" ref="subCategoryService"/>
-		<property name="announcementService" ref="announcementService"/>
+		<property name="passageDao" ref="passageDao" />
+		<property name="categoryDao" ref="categoryDao" />
+		<property name="subCategoryDao" ref="subCategoryDao"/>
+		<property name="announcementDao" ref="announcementDao"/>
 	</bean>
 	<bean id="commentAction" class="me.paul.yiblog.action.CommentAction"
 		scope="prototype">
-		<property name="commentService" ref="commentService"></property>
+		<property name="commentDao" ref="commentDao"></property>
 	</bean>
 	<bean id="userAction" class="me.paul.yiblog.action.UserAction"
 		scope="prototype">
-		<property name="userService" ref="userService"></property>
+		<property name="userDao" ref="userDao"></property>
 	</bean>
 	<bean id="subCategoryAction" class="me.paul.yiblog.action.SubCategoryAction"
 		scope="prototype">
-		<property name="subCategoryService" ref="subCategoryService"></property>
-		<property name="categoryService" ref="categoryService"></property>
+		<property name="subCategoryDao" ref="subCategoryDao"></property>
+		<property name="categoryDao" ref="categoryDao"></property>
 	</bean>
 	<bean id="replyAction" class="me.paul.yiblog.action.ReplyAction"
 		scope="prototype">
-		<property name="replyService" ref="replyService"></property>
-		<property name="commentService" ref="commentService"></property>
+		<property name="replyDao" ref="replyDao"></property>
+		<property name="commentDao" ref="commentDao"></property>
 	</bean>
 	<bean id="announcementAction" class="me.paul.yiblog.action.AnnouncementAction"
 		scope="prototype">
-		<property name="announcementService" ref="announcementService"></property>
+		<property name="announcementDao" ref="announcementDao"></property>
+	</bean>
+	<bean id="feedbackAction" class="me.paul.yiblog.action.FeedbackAction" scope="prototype">
+	  <property name="feedbackDao" ref="feedbackDao"/>
 	</bean>
 
 	<!-- filter -->
 	<bean id="loadCategoryFilter" class="me.paul.yiblog.filter.LoadCategoryFilter">
-		<property name="categoryService" ref="categoryService" />
+		<property name="categoryDao" ref="categoryDao" />
 	</bean>
 	<bean id="loadPassageFilter" class="me.paul.yiblog.filter.LoadPassageFilter">
 		<property name="count" value="5"></property>
-		<property name="passageService" ref="passageService"></property>
+		<property name="passageDao" ref="passageDao"></property>
 	</bean>
 	<bean id="loadAnnouncementFilter" class="me.paul.yiblog.filter.LoadAnnouncementFilter">
-		<property name="announcementService" ref="announcementService"/>
+		<property name="announcementDao" ref="announcementDao"/>
 	</bean>
 	<bean id="loadSiteInfoFilter" class="me.paul.yiblog.filter.LoadSiteInfoFilter">
-		<property name="announcementService" ref="announcementService"/>
+		<property name="announcementDao" ref="announcementDao"/>
 	</bean>
 
 	<!-- interceptor -->
 	<bean id="loadCommentInterceptor" class="me.paul.yiblog.interceptor.LoadCommentInterceptor">
-		<property name="commentService" ref="commentService" />
-		<property name="replyService" ref="replyService"/>
+		<property name="commentDao" ref="commentDao" />
+		<property name="replyDao" ref="replyDao"/>
 	</bean>
 	
 

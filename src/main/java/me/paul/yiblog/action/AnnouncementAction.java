@@ -2,8 +2,8 @@ package me.paul.yiblog.action;
 
 import java.util.Date;
 
+import me.paul.yiblog.dao.IAnnouncementDao;
 import me.paul.yiblog.entity.Announcement;
-import me.paul.yiblog.service.IAnnouncementService;
 
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -11,10 +11,10 @@ public class AnnouncementAction  extends ActionSupport{
 
 	private static final long serialVersionUID = -7516954256960401148L;
 	
-	private IAnnouncementService announcementService ;
+	private IAnnouncementDao announcementDao ;
 	
-	public void setAnnouncementService(IAnnouncementService announcementService) {
-		this.announcementService = announcementService;
+	public void setAnnouncementDao(IAnnouncementDao announcementDao) {
+		this.announcementDao = announcementDao;
 	}
 	
 	private Announcement announcement;
@@ -29,7 +29,7 @@ public class AnnouncementAction  extends ActionSupport{
 	
 	public String save(){
 		announcement.setTime(new Date());
-		announcementService.save(announcement);
+		announcementDao.save(announcement);
 		return "index";
 	}
 	

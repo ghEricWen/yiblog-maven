@@ -37,14 +37,12 @@
 				<div >
 					<s:url action="pass_page" var="ascUrl" escapeAmp="false">
 						<s:param name="page" value="1" />
-						<s:param name="passagePerPage" value="%{passagePerPage}" />
 						<s:param name="category.id" value="%{category.id}" />
 						<s:param name="subCategory.id" value="%{subCategory.id}" />
 					</s:url>
 					<a class="btn btn-primary" href="<s:property value="#ascUrl"/>">时间升序</a>
 					<s:url action="pass_page?order=reverse" var="descUrl" escapeAmp="false">
 						<s:param name="page" value="1" />
-						<s:param name="passagePerPage" value="%{passagePerPage}" />
 						<s:param name="category.id" value="%{category.id}" />
 						<s:param name="subCategory.id" value="%{subCategory.id}" />
 					</s:url>
@@ -80,15 +78,13 @@
 					<li id="lastPageLi"><s:url escapeAmp="false" var="lastPageUrl"
 							value="pass_page">
 							<s:param name="page" value="%{#request.lastPage}" />
-							<s:param name="passagePerPage" value="%{passagePerPage}" />
-							<s:param name="category" value="%{category.id}" />
+							<s:param name="category.id" value="%{category.id}" />
 							<s:param name="subCategory" value="%{subCategory.id}" />
 							<s:param name="order" value="%{order}" />
 						</s:url> <a href="<s:property value="#lastPageUrl"/>"> 上一页 </a></li>
 					<s:iterator value="%{#request.mapPage}" var="page">
 						<li><s:url escapeAmp="false" var="pageUrl" value="pass_page">
 								<s:param name="page" value="%{#page.value}" />
-								<s:param name="passagePerPage" value="%{passagePerPage}" />
 								<s:param name="category.id" value="%{category.id}" />
 								<s:param name="subCategory.id" value="%{subCategory.id}" />
 								<s:param name="order" value="%{order}" />
@@ -99,7 +95,6 @@
 					<li id="nextPageLi"><s:url escapeAmp="false" var="nextPageUrl"
 							value="pass_page">
 							<s:param name="page" value="%{#request.nextPage}" />
-							<s:param name="passagePerPage" value="%{passagePerPage}" />
 							<s:param name="category.id" value="%{category.id}" />
 							<s:param name="subCategory.id" value="%{subCategory.id}" />
 							<s:param name="order" value="%{order}" />
@@ -107,7 +102,6 @@
 					<li><s:url escapeAmp="false" var="totalPageUrl"
 							value="pass_page">
 							<s:param name="page" value="%{#request.pageCount}" />
-							<s:param name="passagePerPage" value="%{passagePerPage}" />
 							<s:param name="category.id" value="%{category.id}" />
 							<s:param name="subCategory.id" value="%{subCategory.id}" />
 							<s:param name="order" value="%{order}" />
@@ -120,7 +114,6 @@
 					<s:iterator value="%{#request.listSubCategory}" var="subCategory" status="vs">
 						<s:url escapeAmp="false" var="subCategoryUrl" action="pass_page">
 							<s:param name="page" value="1"/>
-							<s:param name="passagePerPage" value="10"/>
 							<s:param name="subCategory.id" value="%{#subCategory.id}"/>
 						</s:url>
 						<li><a href="<s:property value="#subCategoryUrl"/>"><s:property value="#subCategory.name"/></a></li>

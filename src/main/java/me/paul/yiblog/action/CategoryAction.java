@@ -1,7 +1,7 @@
 package me.paul.yiblog.action;
 
+import me.paul.yiblog.dao.ICategoryDao;
 import me.paul.yiblog.entity.Category;
-import me.paul.yiblog.service.ICategoryService;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
@@ -10,10 +10,10 @@ public class CategoryAction extends ActionSupport {
 
 	private static final long serialVersionUID = 1534344860213406467L;
 	
-	private ICategoryService cateService;
+	private ICategoryDao categoryDao;
 
-	public void setCateService(ICategoryService cateService) {
-		this.cateService = cateService;
+	public void setCategoryDao(ICategoryDao categoryDao) {
+		this.categoryDao = categoryDao;
 	}
 
 	private Category category;
@@ -28,17 +28,17 @@ public class CategoryAction extends ActionSupport {
 
 	public String save() {
 		category.setPassageCount(0);
-		cateService.save(category);
+		categoryDao.save(category);
 		return "index";
 	}
 	
 	public String update(){
-		cateService.update(category);
+		categoryDao.update(category);
 		return "index";
 	}
 	
 	public String get(){
-		Category cateGet = cateService.get(category.getId());
+		Category cateGet = categoryDao.get(category.getId());
 		ActionContext.getContext().getContextMap().put("cateGet", cateGet);
 		return "showCate";
 	}

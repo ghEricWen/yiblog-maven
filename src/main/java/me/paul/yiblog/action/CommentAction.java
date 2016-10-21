@@ -6,10 +6,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import me.paul.yiblog.dao.ICommentDao;
 import me.paul.yiblog.entity.Comment;
 import me.paul.yiblog.entity.Passage;
 import me.paul.yiblog.entity.User;
-import me.paul.yiblog.service.ICommentService;
 import me.paul.yiblog.util.CommonUtil;
 
 import org.apache.struts2.ServletActionContext;
@@ -81,10 +81,10 @@ public class CommentAction extends ActionSupport {
 		this.passage = passage;
 	}
 
-	private ICommentService commentService;
+	private ICommentDao commentDao;
 
-	public void setCommentService(ICommentService commentService) {
-		this.commentService = commentService;
+	public void setCommentService(ICommentDao commentDao) {
+		this.commentDao = commentDao;
 	}
 
 	//添加评论
@@ -94,13 +94,13 @@ public class CommentAction extends ActionSupport {
 		comment.setFromUser(fromUser);
 		comment.setToUser(toUser);
 		comment.setNewComment(1);
-		commentService.save(comment);
+		commentDao.save(comment);
 		return "toPassage";
 	}
 
 	//得到某管理员所收到的评论数
 	public String getCount() throws IOException {
-		int count = commentService.getNewCommentCount(toUser.getId());
+		int count = commentDao.getNewCommentCount(toUser.getId());
 		PrintWriter writer = ServletActionContext.getResponse().getWriter();
 		writer.write(String.valueOf(count));
 		return null;
@@ -109,7 +109,7 @@ public class CommentAction extends ActionSupport {
 	//获取newComment
 	public String getNewComment() {
 		long id = toUser.getId();
-		List<Comment> newComments = commentService.getNewComment(id);
+		List<Comment> newComments = commentDao.getNewComment(id);
 		ActionContext.getContext().getContextMap()
 				.put("newComments", newComments);
 		return "newComment";
@@ -118,8 +118,8 @@ public class CommentAction extends ActionSupport {
 	//分页获取comments
 	public String getComments() {
 		long id = toUser.getId();
-		List<Comment> list = commentService.getComment(id, page, commentPerPage);
-		int count = commentService.getAllCommentCount(id);
+		List<Comment> list = commentDao.getComment(id, page, commentPerPage);
+		int count = commentDao.getAllCommentCount(id);
 		int pageCount = (int) Math.ceil(count * 1.0 / commentPerPage);
 		Map<String,Integer> map = CommonUtil.getPageMap(pageCount,page);
 		Map<String,Object> request = ActionContext.getContext().getContextMap();
@@ -135,9 +135,9 @@ public class CommentAction extends ActionSupport {
 	//将评论标记为已读
 	public synchronized String markRead(){
 		long id = comment.getId();
-		comment = commentService.get(id);
+		comment = commentDao.get(id);
 		comment.setNewComment(0);
-		commentService.update(comment);
+		commentDao.update(comment);
 		return "markRead";
 	}
 

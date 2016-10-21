@@ -10,8 +10,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import me.paul.yiblog.dao.ICategoryDao;
 import me.paul.yiblog.entity.Category;
-import me.paul.yiblog.service.ICategoryService;
 
 public class LoadCategoryFilter implements Filter {
 
@@ -19,15 +19,15 @@ public class LoadCategoryFilter implements Filter {
 
 	}
 
-	private ICategoryService categoryService;
+	private ICategoryDao categoryDao;
 
-	public void setCategoryService(ICategoryService categoryService) {
-		this.categoryService = categoryService;
+	public void setCategoryDao(ICategoryDao categoryDao) {
+		this.categoryDao = categoryDao;
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		List<Category> cateList = categoryService.getAll();
+		List<Category> cateList = categoryDao.getAll();
 		request.setAttribute("listCategory", cateList);
 		chain.doFilter(request, response);
 	}

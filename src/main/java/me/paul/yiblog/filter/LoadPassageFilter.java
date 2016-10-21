@@ -10,8 +10,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import me.paul.yiblog.dao.IPassageDao;
 import me.paul.yiblog.entity.Passage;
-import me.paul.yiblog.service.IPassageService;
 
 public class LoadPassageFilter implements Filter {
 
@@ -21,16 +21,16 @@ public class LoadPassageFilter implements Filter {
 		this.count = count;
 	}
 
-	private IPassageService passageService;
+	private IPassageDao passageDao;
 
-	public void setPassageService(IPassageService passageService) {
-		this.passageService = passageService;
+	public void setPassageDao(IPassageDao passageDao) {
+		this.passageDao = passageDao;
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		List<Passage> listMost = passageService.mostRead(count);
-		List<Passage> listLatest = passageService.latest(count);
+		List<Passage> listMost = passageDao.mostRead(count);
+		List<Passage> listLatest = passageDao.latest(count);
 		request.setAttribute("mostRead", listMost);
 		request.setAttribute("latest", listLatest);
 		chain.doFilter(request, response);

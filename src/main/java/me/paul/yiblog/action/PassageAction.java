@@ -4,16 +4,18 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpSession;
+
+import me.paul.yiblog.dao.IAnnouncementDao;
+import me.paul.yiblog.dao.ICategoryDao;
+import me.paul.yiblog.dao.IPassageDao;
+import me.paul.yiblog.dao.ISubCategoryDao;
 import me.paul.yiblog.entity.Announcement;
 import me.paul.yiblog.entity.Category;
 import me.paul.yiblog.entity.Passage;
 import me.paul.yiblog.entity.SubCategory;
 import me.paul.yiblog.entity.User;
-import me.paul.yiblog.service.IAnnouncementService;
-import me.paul.yiblog.service.ICategoryService;
-import me.paul.yiblog.service.IPassageService;
-import me.paul.yiblog.service.ISubCategoryService;
 import me.paul.yiblog.util.CommonUtil;
 
 import org.apache.struts2.ServletActionContext;
@@ -25,28 +27,28 @@ public class PassageAction extends ActionSupport {
 
 	private static final long serialVersionUID = 1306752896985884525L;
 
-	private IPassageService passService;
+	private IPassageDao passageDao;
 
-	private ICategoryService cateService;
+	private ICategoryDao categoryDao;
 
-	private ISubCategoryService subCategoryService;
+	private ISubCategoryDao subCategoryDao;
 
-	private IAnnouncementService announcementService;
+	private IAnnouncementDao announcementDao;
 
-	public void setAnnouncementService(IAnnouncementService announcementService) {
-		this.announcementService = announcementService;
+	public void setAnnouncementDao(IAnnouncementDao announcementDao) {
+		this.announcementDao = announcementDao;
 	}
 
-	public void setSubCategoryService(ISubCategoryService subCategoryService) {
-		this.subCategoryService = subCategoryService;
+	public void setSubCategoryDao(ISubCategoryDao subCategoryDao) {
+		this.subCategoryDao = subCategoryDao;
 	}
 
-	public void setPassService(IPassageService passService) {
-		this.passService = passService;
+	public void setPassageDao(IPassageDao passageDao) {
+		this.passageDao = passageDao;
 	}
 
-	public void setCateService(ICategoryService cateService) {
-		this.cateService = cateService;
+	public void setCategoryDao(ICategoryDao categoryDao) {
+		this.categoryDao = categoryDao;
 	}
 
 	private Passage passage;
@@ -123,16 +125,16 @@ public class PassageAction extends ActionSupport {
 		passage.setWritetime(new Date());
 		passage.setSubCategory(subCategory);
 		synchronized (PassageAction.class) {
-			category = cateService.get(category.getId());
-			subCategory = subCategoryService.get(subCategory.getId());
+			category = categoryDao.get(category.getId());
+			subCategory = subCategoryDao.get(subCategory.getId());
 			category.setPassageCount(category.getPassageCount() + 1);
 			subCategory.setPassageCount(subCategory.getPassageCount() + 1);
-			cateService.update(category);
-			subCategoryService.update(subCategory);
-			passService.save(passage);
-			Announcement announcement = announcementService.get(3l);
+			categoryDao.update(category);
+			subCategoryDao.update(subCategory);
+			passageDao.save(passage);
+			Announcement announcement = announcementDao.get(3l);
 			announcement.setTime(new Date());
-			announcementService.update(announcement);
+			announcementDao.update(announcement);
 		}
 		return "index";
 	}
@@ -140,7 +142,7 @@ public class PassageAction extends ActionSupport {
 	// 获取文章
 	public String get() {
 		HttpSession session = ServletActionContext.getRequest().getSession();
-		passage = passService.get(passage.getId());
+		passage = passageDao.get(passage.getId());
 		@SuppressWarnings("unchecked")
 		List<Long> hasReadPassages = (List<Long>) session.getAttribute("read");
 		if (hasReadPassages == null) {
@@ -149,7 +151,7 @@ public class PassageAction extends ActionSupport {
 		if (!hasReadPassages.contains(passage.getId())) {
 			synchronized (PassageAction.class) {
 				passage.setReadtime(passage.getReadtime() + 1);
-				passService.update(passage);
+				passageDao.update(passage);
 			}
 			hasReadPassages.add(passage.getId());
 		}
@@ -162,20 +164,19 @@ public class PassageAction extends ActionSupport {
 	// 获取文章以编辑
 	public String editPassage() {
 		long id = passage.getId();
-		Passage passage = passService.get(id);
+		Passage passage = passageDao.get(id);
 		ActionContext.getContext().getContextMap().put("passageGet", passage);
-		System.out.println(passage.getContent());
 		return "editPassage";
 	}
 
 	// 确定提交编辑
 	public synchronized String submitUpdate() {
-		Passage passageGet = passService.get(passage.getId());
+		Passage passageGet = passageDao.get(passage.getId());
 		passageGet.setContent(passage.getContent());
 		passageGet.setTitle(passage.getTitle());
 		passageGet.setCategory(category);
 		passageGet.setSubCategory(subCategory);
-		passService.update(passageGet);
+		passageDao.update(passageGet);
 		return "index";
 	}
 
@@ -186,43 +187,43 @@ public class PassageAction extends ActionSupport {
 		Map<String, Object> request = ActionContext.getContext()
 				.getContextMap();
 		if (category != null) {
-			category = cateService.get(category.getId());
+			category = categoryDao.get(category.getId());
 			count = category.getPassageCount();
 			request.put("currentCate", category.getName());
-			List<SubCategory> listSub = subCategoryService
+			List<SubCategory> listSub = subCategoryDao
 					.getByCategory(category.getId());
 			request.put("listSubCategory", listSub);
 			if (order == null) {
-				list = passService.categoryPage(page, passagePerPage,
+				list = passageDao.categoryPage(page, passagePerPage,
 						category.getId());
 			} else if (order.equals("reverse")) {
-				list = passService.categoryPage(page, count, category.getId(),
+				list = passageDao.categoryPage(page, count, category.getId(),
 						true);
 			}
 
 		}
 		if (subCategory != null) {
-			subCategory = subCategoryService.get(subCategory.getId());
+			subCategory = subCategoryDao.get(subCategory.getId());
 			count = subCategory.getPassageCount();
 			request.put("currentCate", subCategory.getName());
-			List<SubCategory> listSub = subCategoryService
+			List<SubCategory> listSub = subCategoryDao
 					.getByCategory(subCategory.getCategory().getId());
 			request.put("listSubCategory", listSub);
 			if (order == null) {
-				list = passService.subCategoryPage(page, passagePerPage,
+				list = passageDao.subCategoryPage(page, passagePerPage,
 						subCategory.getId());
 			} else if (order.equals("reverse")) {
-				list = passService.subCategoryPage(page, passagePerPage,
+				list = passageDao.subCategoryPage(page, passagePerPage,
 						subCategory.getId(), true);
 			}
 		}
 		if (category == null && subCategory == null) {
-			count = cateService.getTotalPassageCount();
+			count = categoryDao.getTotalPassageCount();
 			request.put("currentCate", "all");
 			if (order == null) {
-				list = passService.page(page, passagePerPage);
+				list = passageDao.page(page, passagePerPage);
 			} else if (order.equals("reverse")) {
-				list = passService.page(page, passagePerPage, true);
+				list = passageDao.page(page, passagePerPage, true);
 			}
 		}
 		int pageCount = (int) Math.ceil(count * 1.0 / passagePerPage);
